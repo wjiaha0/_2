@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汉字学堂 | 成人汉字学习平台</title>
+    <meta name="description" content="专为成人初学者设计的汉字学习网站，包含笔顺动画、语音跟读和个性化学习进度管理">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>字</text></svg>">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-book-open logo-icon"></i>
+                <h1>汉字学堂</h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="#learning" class="nav-link active" data-page="learning">
+                    <i class="fas fa-home"></i> 学习
+                </a>
+                <a href="#review" class="nav-link" data-page="review">
+                    <i class="fas fa-redo"></i> 复习
+                </a>
+                <a href="#stats" class="nav-link" data-page="stats">
+                    <i class="fas fa-chart-line"></i> 统计
+                </a>
+                <a href="#settings" class="nav-link" data-page="settings">
+                    <i class="fas fa-cog"></i> 设置
+                </a>
+                <button id="admin-toggle" class="admin-toggle" title="管理面板">
+                    <i class="fas fa-user-cog"></i>
+                </button>
+            </nav>
+            <div class="theme-toggle-container">
+                <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- 学习页面 (默认显示) -->
+        <section id="learning" class="page active">
+            <div class="learning-container pure-g">
+                <!-- 左侧：汉字展示区 -->
+                <div class="pure-u-1 pure-u-lg-2-3">
+                    <div class="card main-character-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-language"></i> 汉字学习</h2>
+                            <div class="progress-indicator">
+                                <span id="current-index">1</span> / <span id="total-count">0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="character-display">
+                            <!-- 当前汉字 -->
+                            <div class="current-character-container">
+                                <div id="current-character" class="current-character">汉</div>
+                                <div class="character-info">
+                                    <div id="pinyin" class="pinyin">hàn</div>
+                                    <div id="phrase" class="phrase">汉字、汉语、汉族</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 笔顺动画区域 -->
+                            <div class="stroke-order-section">
+                                <h3><i class="fas fa-pen-nib"></i> 笔顺动画</h3>
+                                <div id="hanzi-writer-container" class="hanzi-writer-container">
+                                    <!-- HanziWriter 将在这里渲染 -->
+                                </div>
+                                <div class="stroke-controls">
+                                    <button id="play-animation" class="btn btn-primary">
+                                        <i class="fas fa-play"></i> 播放笔顺
+                                    </button>
+                                    <button id="pause-animation" class="btn btn-secondary">
+                                        <i class="fas fa-pause"></i> 暂停
+                                    </button>
+                                    <button id="reset-animation" class="btn btn-secondary">
+                                        <i class="fas fa-redo"></i> 重新开始
+                                    </button>
+                                    <div class="speed-control">
+                                        <label for="animation-speed"><i class="fas fa-tachometer-alt"></i> 动画速度</label>
+                                        <input type="range" id="animation-speed" min="1" max="10" value="5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 语音跟读 -->
+                        <div class="pronunciation-section">
+                            <h3><i class="fas fa-volume-up"></i> 发音练习</h3>
+                            <div class="pronunciation-controls">
+                                <button id="speak-character" class="btn btn-primary">
+                                    <i class="fas fa-microphone"></i> 朗读汉字
+                                </button>
+                                <button id="speak-phrase" class="btn btn-secondary">
+                                    <i class="fas fa-comment-dots"></i> 朗读词组
+                                </button>
+                                <div class="voice-controls">
+                                    <label for="voice-rate"><i class="fas fa-running"></i> 语速</label>
+                                    <input type="range" id="voice-rate" min="0.5" max="2" step="0.1" value="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧：进度与导航 -->
+                <div class="pure-u-1 pure-u-lg-1-3">
+                    <!-- 学习进度 -->
+                    <div class="card progress-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-bar"></i> 学习进度</h3>
+                        </div>
+                        <div class="progress-visual">
+                            <div class="progress-circle">
+                                <svg width="120" height="120" viewBox="0 0 120 120">
+                                    <circle class="progress-bg" cx="60" cy="60" r="54" stroke-width="12"></circle>
+                                    <circle id="progress-circle" class="progress-fill" cx="60" cy="60" r="54" stroke-width="12" 
+                                            stroke-dasharray="339.292" stroke-dashoffset="339.292"></circle>
+                                </svg>
+                                <div class="progress-text">
+                                    <span id="progress-percent">0</span>%
+                                </div>
+                            </div>
+                            <div class="progress-stats">
+                                <div class="stat-item">
+                                    <div class="stat-label">已学汉字</div>
+                                    <div id="learned-count" class="stat-value">0</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">连续学习</div>
+                                    <div id="streak-count" class="stat-value">0 天</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">今日学习</div>
+                                    <div id="today-count" class="stat-value">0 字</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-actions">
+                            <button id="reset-progress" class="btn btn-warning">
+                                <i class="fas fa-undo"></i> 重置进度
+                            </button>
+                            <button id="export-data" class="btn btn-secondary">
+                                <i class="fas fa-download"></i> 导出数据
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 导航控制 -->
+                    <div class="card navigation-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-compass"></i> 导航</h3>
+                        </div>
+                        <div class="navigation-controls">
+                            <button id="prev-character" class="btn btn-outline">
+                                <i class="fas fa-chevron-left"></i> 上一个
+                            </button>
+                            <button id="next-character" class="btn btn-primary">
+                                下一个 <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="quick-nav">
+                            <div class="quick-nav-label">快速跳转:</div>
+                            <div class="quick-nav-input">
+                                <input type="number" id="jump-to-index" min="1" value="1">
+                                <button id="jump-to-btn" class="btn btn-small">跳转</button>
+                            </div>
+                        </div>
+                        <div class="character-grid">
+                            <!-- 汉字网格将由JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 复习页面 -->
+        <section id="review" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-redo"></i> 复习模式</h2>
+                </div>
+                <div class="review-content">
+                    <div class="review-info">
+                        <p>随机复习已学过的汉字，巩固记忆。系统会优先显示您掌握程度较低的汉字。</p>
+                        <div class="review-stats">
+                            <div class="review-stat">
+                                <span class="stat-label">待复习汉字:</span>
+                                <span id="review-count" class="stat-value">0</span>
+                            </div>
+                            <div class="review-stat">
+                                <span class="stat-label">掌握程度:</span>
+                                <span id="mastery-level" class="stat-value">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-controls">
+                        <button id="start-review" class="btn btn-primary">
+                            <i class="fas fa-play-circle"></i> 开始复习
+                        </button>
+                        <button id="random-review" class="btn btn-secondary">
+                            <i class="fas fa-random"></i> 随机复习
+                        </button>
+                        <div class="review-settings">
+                            <label>
+                                <input type="checkbox" id="review-mastered" checked>
+                                包括已掌握汉字
+                            </label>
+                            <label>
+                                复习数量:
+                                <select id="review-quantity">
+                                    <option value="10">10个</option>
+                                    <option value="20" selected>20个</option>
+                                    <option value="30">30个</option>
+                                    <option value="50">50个</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="review-character" class="review-character-container">
+                        <div class="review-character-placeholder">
+                            <i class="fas fa-book-open"></i>
+                            <p>点击"开始复习"按钮开始复习</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 统计页面 -->
+        <section id="stats" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-line"></i> 学习统计</h2>
+                </div>
+                <div class="stats-content">
+                    <div class="stats-grid pure-g">
+                        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="stat-data">
+                                    <div class="stat-value" id="total-days">0</div>
+                                    <div class="stat-label">总学习天数</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-language"></i>
+                                </div>
+                                <div class="stat-data">
+                                    <div class="stat-value" id="total-characters">0</div>
+                                    <div class="stat-label">已学汉字总数</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-data">
+                                    <div class="stat-value" id="total-time">0</div>
+                                    <div class="stat-label">总学习时间(分钟)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-fire"></i>
+                                </div>
+                                <div class="stat-data">
+                                    <div class="stat-value" id="current-streak">0</div>
+                                    <div class="stat-label">当前连续学习天数</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="stat-data">
+                                    <div class="stat-value" id="mastery-rate">0%</div>
+                                    <div class="stat-label">平均掌握程度</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="stat-data">
+                                    <div class="stat-value" id="review-count-stat">0</div>
+                                    <div class="stat-label">总复习次数</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="charts-section pure-g">
+                        <div class="pure-u-1 pure-u-lg-1-2">
+                            <div class="chart-card">
+                                <h3><i class="fas fa-chart-bar"></i> 每日学习进度</h3>
+                                <div class="chart-container">
+                                    <canvas id="daily-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pure-u-1 pure-u-lg-1-2">
+                            <div class="chart-card">
+                                <h3><i class="fas fa-chart-pie"></i> 掌握程度分布</h3>
+                                <div class="chart-container">
+                                    <canvas id="mastery-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 设置页面 -->
+        <section id="settings" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-cog"></i> 设置</h2>
+                </div>
+                <div class="settings-content">
+                    <div class="settings-section">
+                        <h3><i class="fas fa-palette"></i> 外观设置</h3>
+                        <div class="settings-option">
+                            <label>主题模式</label>
+                            <div class="theme-options">
+                                <button class="theme-option active" data-theme="light">
+                                    <i class="fas fa-sun"></i> 浅色
+                                </button>
+                                <button class="theme-option" data-theme="dark">
+                                    <i class="fas fa-moon"></i> 深色
+                                </button>
+                                <button class="theme-option" data-theme="auto">
+                                    <i class="fas fa-adjust"></i> 自动
+                                </button>
+                            </div>
+                        </div>
+                        <div class="settings-option">
+                            <label>字体大小</label>
+                            <div class="font-size-control">
+                                <button class="font-size-btn" data-size="small">小</button>
+                                <button class="font-size-btn active" data-size="medium">中</button>
+                                <button class="font-size-btn" data-size="large">大</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h3><i class="fas fa-user-graduate"></i> 学习设置</h3>
+                        <div class="settings-option">
+                            <label for="default-speed">默认笔顺动画速度</label>
+                            <input type="range" id="default-speed" min="1" max="10" value="5">
+                            <span id="speed-value">中</span>
+                        </div>
+                        <div class="settings-option">
+                            <label for="default-voice-rate">默认语音速度</label>
+                            <input type="range" id="default-voice-rate" min="0.5" max="2" step="0.1" value="1">
+                            <span id="voice-rate-value">正常</span>
+                        </div>
+                        <div class="settings-option">
+                            <label>
+                                <input type="checkbox" id="auto-play" checked>
+                                学习新字时自动播放笔顺动画
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <label>
+                                <input type="checkbox" id="auto-speak" checked>
+                                学习新字时自动朗读汉字
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h3><i class="fas fa-database"></i> 数据管理</h3>
+                        <div class="settings-option">
+                            <label>备份与恢复</label>
+                            <div class="data-actions">
+                                <button id="export-settings" class="btn btn-secondary">
+                                    <i class="fas fa-file-export"></i> 导出设置
+                                </button>
+                                <button id="import-settings" class="btn btn-secondary">
+                                    <i class="fas fa-file-import"></i> 导入设置
+                                </button>
+                            </div>
+                        </div>
+                        <div class="settings-option">
+                            <label>重置数据</label>
+                            <div class="data-actions">
+                                <button id="reset-all-data" class="btn btn-warning">
+                                    <i class="fas fa-trash-alt"></i> 重置所有数据
+                                </button>
+                            </div>
+                            <p class="note">注意：这将清除所有学习进度和设置，无法撤销！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 管理面板 (默认隐藏) -->
+    <div id="admin-panel" class="admin-panel">
+        <div class="admin-panel-header">
+            <h3><i class="fas fa-user-cog"></i> 字库管理面板</h3>
+            <button id="close-admin" class="btn btn-icon">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="admin-panel-content">
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="view">查看字库</button>
+                <button class="admin-tab" data-tab="add">添加汉字</button>
+                <button class="admin-tab" data-tab="import">批量导入</button>
+            </div>
+            
+            <div class="admin-tab-content active" id="view-tab">
+                <div class="admin-search">
+                    <input type="text" id="admin-search" placeholder="搜索汉字、拼音或词组...">
+                    <button id="admin-search-btn" class="btn btn-small">
+                        <i class="fas fa-search"></i> 搜索
+                    </button>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>汉字</th>
+                                <th>拼音</th>
+                                <th>词组</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body">
+                            <!-- 表格内容将通过JS动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="admin-tab-content" id="add-tab">
+                <form id="add-character-form">
+                    <div class="form-group">
+                        <label for="new-char">汉字 *</label>
+                        <input type="text" id="new-char" maxlength="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-pinyin">拼音（带声调） *</label>
+                        <input type="text" id="new-pinyin" placeholder="hàn" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-phrase">常用词组（用顿号分隔） *</label>
+                        <input type="text" id="new-phrase" placeholder="汉字、汉语、汉族" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-meaning">英文释义（可选）</label>
+                        <input type="text" id="new-meaning" placeholder="Chinese, Han people">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> 添加汉字
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> 重置
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="admin-tab-content" id="import-tab">
+                <div class="import-info">
+                    <p><i class="fas fa-info-circle"></i> 您可以通过JSON格式批量导入汉字数据。</p>
+                    <pre id="import-format">
+[
+  {
+    "char": "字",
+    "pinyin": "zì",
+    "phrase": "汉字、字母、名字"
+  },
+  {
+    "char": "学",
+    "pinyin": "xué",
+    "phrase": "学习、学校、学生"
+  }
+]</pre>
+                </div>
+                <div class="form-group">
+                    <label for="import-data">JSON数据</label>
+                    <textarea id="import-data" rows="8" placeholder="将JSON数据粘贴到这里..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button id="import-json" class="btn btn-primary">
+                        <i class="fas fa-file-import"></i> 导入JSON
+                    </button>
+                    <button id="export-json" class="btn btn-secondary">
+                        <i class="fas fa-file-export"></i> 导出当前字库
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知消息 -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <span id="notification-message"></span>
+        </div>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+        </div>
+    </div>
+
+    <!-- 脚本引入 -->
+    <!-- 修改这里：将CDN引入改为本地文件引入 -->
+    <script src="hanzi-writer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="hanzi_database.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
